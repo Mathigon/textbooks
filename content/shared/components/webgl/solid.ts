@@ -22,11 +22,11 @@ export type Vector = [number, number, number];
 // Custom methods on the THREE.Object3D class
 interface Object3D extends THREE.Object3D {
   setClipPlanes?: (planes: THREE.Plane[]) => void;
-  updateGeometry?: (gep: THREE.Geometry) => void;
+  updateGeometry?: (geo: THREE.BufferGeometry) => void;
   updateEnds?: (f: Vector, t: Vector) => void;
 }
 
-function createEdges(geometry: THREE.Geometry, material: THREE.Material, maxAngle?: number) {
+function createEdges(geometry: THREE.BufferGeometry, material: THREE.Material, maxAngle?: number) {
   const obj = new THREE.Object3D();
   if (!maxAngle) return obj;
 
@@ -241,7 +241,7 @@ export class Solid extends CustomElementView {
     this.object.add(mesh);
   }
 
-  addSolid(geo: THREE.Geometry, color: number, maxAngle = 5, flatShading = false) {
+  addSolid(geo: THREE.BufferGeometry, color: number, maxAngle = 5, flatShading = false) {
     const edgeMaterial = new THREE.LineBasicMaterial({color: 0xffffff});
     const edges = new THREE.EdgesGeometry(geo, maxAngle);
 
@@ -257,7 +257,7 @@ export class Solid extends CustomElementView {
   //      geometry.isConeGeometry etc.
 
   // A translucent material with a solid border.
-  addOutlined(geo: THREE.Geometry, color = 0xaaaaaa, maxAngle = 5, opacity = 0.1, strokeColor?: number) {
+  addOutlined(geo: THREE.BufferGeometry, color = 0xaaaaaa, maxAngle = 5, opacity = 0.1, strokeColor?: number) {
     const solidMaterial = Solid.translucentMaterial(color, opacity);
     const solid = new THREE.Mesh(geo, solidMaterial);
 
@@ -271,7 +271,7 @@ export class Solid extends CustomElementView {
       solidMaterial.clippingPlanes = planes;
     };
 
-    obj.updateGeometry = function(geo: THREE.Geometry) {
+    obj.updateGeometry = function(geo: THREE.BufferGeometry) {
       solid.geometry.dispose();
       solid.geometry = geo;
       obj.remove(edges);
@@ -285,7 +285,7 @@ export class Solid extends CustomElementView {
 
   // Like .addOutlined, but we also add outlines for curved edges (e.g. of
   // a sphere or cylinder).
-  addWireframe(geometry: THREE.Geometry, color = 0xaaaaaa, maxAngle = 5, opacity = 0.1) {
+  addWireframe(geometry: THREE.BufferGeometry, color = 0xaaaaaa, maxAngle = 5, opacity = 0.1) {
     const solid = this.addOutlined(geometry, color, maxAngle, opacity);
 
     const outlineMaterial = new THREE.MeshBasicMaterial({
@@ -315,7 +315,7 @@ export class Solid extends CustomElementView {
       }
     };
 
-    obj.updateGeometry = function(geo: THREE.Geometry) {
+    obj.updateGeometry = function(geo: THREE.BufferGeometry) {
       if (solid.updateGeometry) solid.updateGeometry(geo);
       for (const mesh of [outline, knockout]) {
         mesh.geometry.dispose();
