@@ -69,3 +69,12 @@ export async function create3D($el: ElementView, fov: number, width: number,
 
   return {$canvas, camera, renderer, draw, onDraw, add, remove};
 }
+
+/**
+ * IMPORTANT: Will not work unless loadThree() has completed
+ */
+export function SafeBufferGeometry() {
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array([]), 0));
+  return geo;
+}

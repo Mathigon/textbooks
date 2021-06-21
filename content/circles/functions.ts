@@ -22,6 +22,7 @@ import '../shared/components/webgl/conic-section';
 import '../shared/components/scale-box/scale-box';
 import './components/pi-scroll';
 import './components/ellipse';
+import {SafeBufferGeometry} from '../shared/components/webgl/webgl';
 
 
 // -----------------------------------------------------------------------------
@@ -618,7 +619,7 @@ export function cylinderPrism($step: Step) {
   });
 
   $solids[1].addMesh((scene) => {
-    const cylinder = $solids[1].addOutlined(new THREE.BufferGeometry(), 0xaaaaaa);
+    const cylinder = $solids[1].addOutlined(SafeBufferGeometry(), 0xaaaaaa);
 
     $step.model.watch((state: any) => {
       const geo = new THREE.CylinderGeometry(1.4, 1.4, 2.8, state.n, 1);
@@ -718,7 +719,7 @@ export function cylinderSurface($step: Step) {
   $solid.one('rotate', () => hasMoved = true);
 
   $solid.addMesh((scene) => {
-    const cylinder = $solid.addWireframe(new THREE.BufferGeometry(), 0x0f82f2, 45,
+    const cylinder = $solid.addWireframe(SafeBufferGeometry(), 0x0f82f2, 45,
         0.2);
     $solid.addArrow([0, -1, -1], [0, 1, -1], 0x0f82f2);
     $solid.addLabel('h', [0, 0, -1], 0x0f82f2, '-10px 0 0 6px');
@@ -802,7 +803,7 @@ export function coneVolume($step: Step) {
   const $solid = $step.$('x-solid') as Solid;
 
   $solid.addMesh((scene) => {
-    const cylinder = $solid.addOutlined(new THREE.BufferGeometry(), 0xaaaaaa);
+    const cylinder = $solid.addOutlined(SafeBufferGeometry(), 0xaaaaaa);
     $step.model.watch((state: any) => {
       const geo = new THREE.ConeGeometry(1.4, 2.8, state.n, 1);
       cylinder.updateGeometry!(geo);
@@ -860,7 +861,7 @@ export function coneSurface($step: Step) {
   const rMax = Math.sqrt(r ** 2 + h ** 2);
 
   $solid.addMesh((scene) => {
-    const cone = $solid.addWireframe(new THREE.BufferGeometry(), 0x22ab24, 45, 0.2);
+    const cone = $solid.addWireframe(SafeBufferGeometry(), 0x22ab24, 45, 0.2);
     const slantArrow = $solid.addArrow([0, -h / 2, -r], [0, h / 2, 0],
         0x22ab24);
     const slantLabel = $solid.addLabel('s', [0, 0, -r / 2], 0x22ab24,
