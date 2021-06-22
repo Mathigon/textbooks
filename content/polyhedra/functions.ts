@@ -4,7 +4,7 @@
 // =============================================================================
 
 
-import {Color, total} from '@mathigon/core';
+import {Color, flatten, total} from '@mathigon/core';
 import {clamp, lerp, toWord} from '@mathigon/fermat';
 import {Angle, intersections, isLineLike, Point, Polygon, Rectangle, Segment} from '@mathigon/euclid';
 import {Browser, slide} from '@mathigon/boost';
@@ -297,15 +297,16 @@ export function platonicOverview($step: Step) {
 }
 
 function makePolyhedronGeo(data: PolyhedronDataItem) {
-  const vertices = data.vertex.map(v => new THREE.Vector3(v[0], v[1], v[2]));
-  const geometry = new THREE.Geometry();
-  geometry.vertices = vertices;
+  const vertices = new Float32Array(flatten(data.vertex) as number[]);
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+  const indices: number[] = [];
   for (const f of data.face) {
     for (let i = 1; i < f.length - 1; i++) {
-      geometry.faces.push(new THREE.Face3(f[0], f[i], f[i + 1]));
+      indices.push(f[0], f[i], f[i + 1]);
     }
   }
-  geometry.computeFaceNormals();
+  geometry.setIndex(indices);
   geometry.computeVertexNormals();
   return geometry;
 }
